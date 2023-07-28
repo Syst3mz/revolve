@@ -1,14 +1,14 @@
 use bevy::prelude::*;
 
-pub(crate) struct PlayerPlugin;
-impl Plugin for PlayerPlugin {
+pub(crate) struct CarPlugin;
+impl Plugin for CarPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_player)
-            .add_systems(Update, move_moving_box);
+        app.add_systems(Startup, spawn_player_car)
+            .add_systems(Update, handle_car_physics);
     }
 }
 
-fn spawn_player(
+fn spawn_player_car(
     mut commands: Commands,
     asset_server: Res<AssetServer>
 ) {
@@ -19,23 +19,24 @@ fn spawn_player(
         transform: Transform::from_xyz(0.0, 0.5, 0.0),
         ..default()
     },
-    MovingBox)
+                    Car)
     );
 }
 
 #[derive(Component)]
-struct MovingBox;
+pub struct Car;
 
 const FREQ:f32 = 2.0 * std::f32::consts::PI * 0.125;
 
-fn move_moving_box(
+fn handle_car_physics(
     time: Res<Time>,
-    mut boxes: Query<&mut Transform, With<MovingBox>>
+    mut boxes: Query<&mut Transform, With<Car>>
 ) {
     for mut bx in boxes.iter_mut()
     {
         let pos = f32::sin(time.elapsed_seconds() * FREQ);
         bx.translation.y = pos + 0.5;
+        bx.translation.x = pos;
 
         bx.rotation = Quat::from_rotation_y(time.elapsed_seconds() * FREQ)
 
