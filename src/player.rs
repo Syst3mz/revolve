@@ -16,29 +16,25 @@ fn spawn_player_car(
 
     commands.spawn((SceneBundle {
         scene: model,
-        transform: Transform::from_xyz(0.0, 0.5, 0.0),
+        transform: Transform::from_xyz(0.0, 0.5, 0.0).with_rotation(Quat::from_rotation_y(std::f32::consts::PI)),
         ..default()
     },
-                    Car)
+                    Car {
+                        speed: 5.0,
+                        turn_speed: 3.0,
+                    })
     );
 }
 
 #[derive(Component)]
-pub struct Car;
-
-const FREQ:f32 = 2.0 * std::f32::consts::PI * 0.125;
+pub struct Car {
+    speed: f32,
+    turn_speed: f32
+}
 
 fn handle_car_physics(
     time: Res<Time>,
-    mut boxes: Query<&mut Transform, With<Car>>
+    mut car_q: Query<(&Car, &mut Transform), With<Car>>
 ) {
-    for mut bx in boxes.iter_mut()
-    {
-        let pos = f32::sin(time.elapsed_seconds() * FREQ);
-        bx.translation.y = pos + 0.5;
-        bx.translation.x = pos;
-
-        bx.rotation = Quat::from_rotation_y(time.elapsed_seconds() * FREQ)
-
-    }
+    let (car, mut transform) = car_q.single();
 }
