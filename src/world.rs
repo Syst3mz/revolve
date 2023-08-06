@@ -14,7 +14,8 @@ fn spawn_floor(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
-    mut gizmo_conf: ResMut<GizmoConfig>
+    mut gizmo_conf: ResMut<GizmoConfig>,
+    mut gizmos: Gizmos
 ) {
     gizmo_conf.depth_bias = -1.0;
     let mesh = Mesh::from(shape::Plane::from_size(15.0));
@@ -32,6 +33,7 @@ fn spawn_floor(
     commands.spawn(floor);
 
     commands.spawn(Collider::cuboid(1.5, 1.5, 1.5));
+    gizmos.ray(Vec3::ZERO, Vec3::Y, Color::RED);
 }
 
 fn spawn_light(
